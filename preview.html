@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#080b14" />
+  <meta name="description" content="Roteiros de seminário do Gustavo em modo leitura instalável." />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>Roteiros do Gustavo</title>
+  <style>
+    :root {
+      --bg: #070a12;
+      --surface: rgba(16, 22, 39, .82);
+      --surface-solid: #101827;
+      --text: #f8fafc;
+      --muted: #a8b3c7;
+      --line: rgba(255,255,255,.12);
+      --accent: #67e8f9;
+      --accent2: #86efac;
+      --shadow: 0 24px 70px rgba(0,0,0,.42);
+      --reader-size: 22px;
+      --bottom-safe: max(14px, env(safe-area-inset-bottom));
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 12% -6%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 24rem),
+        radial-gradient(circle at 88% 6%, color-mix(in srgb, var(--accent2) 14%, transparent), transparent 22rem),
+        linear-gradient(180deg, #080b14, var(--bg));
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    body { min-height: 100dvh; overflow-x: hidden; }
+    button { font: inherit; color: inherit; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .app { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; }
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: calc(12px + env(safe-area-inset-top)) 14px 10px;
+      background: linear-gradient(180deg, rgba(7,10,18,.98), rgba(7,10,18,.78));
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .top-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .mark {
+      width: 40px; height: 40px; border-radius: 16px; display: grid; place-items: center;
+      background:
+        radial-gradient(circle at 34% 26%, #fff 0 9%, transparent 10%),
+        linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #07111f; font-weight: 950;
+      box-shadow: 0 0 26px color-mix(in srgb, var(--accent) 30%, transparent);
+    }
+    h1 { margin: 0; font-size: 16px; line-height: 1.05; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sub { margin-top: 3px; color: var(--muted); font-size: 12px; font-weight: 650; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 8px 11px;
+      border-radius: 999px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+      color: var(--accent); font-size: 12px; font-weight: 850; white-space: nowrap;
+    }
+    .progress-shell { margin-top: 12px; height: 7px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; }
+    .progress { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .28s ease; }
+    .tabs, .chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar, .chips::-webkit-scrollbar { display: none; }
+    .tabs { padding: 10px 0 0; }
+    .chips { padding: 10px 0 2px; }
+    .tab, .chip {
+      min-height: 42px; padding: 10px 13px; border-radius: 999px;
+      background: rgba(255,255,255,.065); border: 1px solid rgba(255,255,255,.1);
+      color: var(--muted); font-size: 13px; font-weight: 850; white-space: nowrap;
+    }
+    .tab.active, .chip.active { color: #07111f; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-color: transparent; }
+    main { width: min(100%, 860px); margin: 0 auto; padding: 14px 14px 112px; }
+    .card {
+      position: relative; border: 1px solid var(--line); border-radius: 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04)), var(--surface);
+      backdrop-filter: blur(18px); box-shadow: var(--shadow); overflow: hidden;
+      min-height: calc(100dvh - 290px); animation: enter .2s ease both;
+    }
+    .card::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background:
+        linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 10%, transparent), transparent) -120% 0 / 80% 100% no-repeat,
+        radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 18rem);
+    }
+    .card-head { position: relative; padding: 20px 20px 0; }
+    .meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 7px 10px;
+      border-radius: 999px; background: color-mix(in srgb, var(--accent) 13%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+      color: var(--accent); font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .09em;
+    }
+    .tag::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent2); box-shadow: 0 0 12px var(--accent2); }
+    .time { padding: 7px 10px; border-radius: 999px; background: rgba(255,255,255,.07); color: #fde68a; font-size: 12px; font-weight: 900; }
+    h2 { margin: 0; font-size: clamp(28px, 8.3vw, 56px); line-height: .95; letter-spacing: -.055em; }
+    .speech { position: relative; padding: 18px 20px 24px; }
+    .speech p {
+      margin: 0 0 18px; padding: 16px; border-radius: 22px;
+      background: rgba(255,255,255,.055); border: 1px solid rgba(255,255,255,.075);
+      color: #f7fbff; font-size: var(--reader-size); line-height: 1.52; font-weight: 620;
+    }
+    .speech p:last-child { margin-bottom: 0; }
+    .bottom {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+      padding: 10px 14px var(--bottom-safe);
+      background: linear-gradient(0deg, rgba(7,10,18,.98), rgba(7,10,18,.78));
+      backdrop-filter: blur(18px); border-top: 1px solid rgba(255,255,255,.09);
+    }
+    .controls {
+      width: min(100%, 860px); margin: 0 auto; display: grid;
+      grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center;
+    }
+    .btn {
+      min-height: 52px; border-radius: 18px; padding: 12px 14px;
+      background: rgba(255,255,255,.075); border: 1px solid rgba(255,255,255,.1);
+      color: var(--text); font-weight: 900; box-shadow: 0 12px 30px rgba(0,0,0,.16);
+    }
+    .btn.primary { color: #06131f; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-color: transparent; }
+    .btn:disabled { opacity: .42; }
+    .center-tools { display: flex; align-items: center; gap: 7px; }
+    .icon-btn {
+      width: 46px; min-height: 46px; border-radius: 16px;
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+      font-weight: 950; color: var(--muted);
+    }
+    .sheet {
+      display: none; position: fixed; inset: auto 10px calc(84px + var(--bottom-safe)) 10px;
+      z-index: 40; max-width: 860px; margin: 0 auto; border: 1px solid var(--line);
+      border-radius: 24px; background: rgba(17,24,39,.96);
+      backdrop-filter: blur(18px); box-shadow: var(--shadow); padding: 14px;
+    }
+    .sheet.open { display: block; }
+    .sheet-title { margin: 0 0 10px; font-size: 14px; color: var(--muted); font-weight: 900; text-transform: uppercase; letter-spacing: .12em; }
+    .sheet-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .sheet .btn { min-height: 48px; box-shadow: none; }
+    .focus .top, .focus .bottom, .focus .chips, .focus .tabs, .focus .sub, .focus .pill { display: none; }
+    .focus main { padding-top: 16px; padding-bottom: 16px; }
+    .focus .card { min-height: calc(100dvh - 32px); }
+    .tap-zone { position: fixed; top: 160px; bottom: 96px; width: 22vw; z-index: 4; }
+    .tap-left { left: 0; } .tap-right { right: 0; }
+    .install-hint {
+      display: none; margin-top: 8px; padding: 10px 12px; border-radius: 16px;
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.09);
+      color: var(--muted); font-size: 12px; line-height: 1.35;
+    }
+    .install-hint.show { display: block; }
+    @keyframes enter { from { opacity: 0; transform: translateY(10px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @media (max-width: 430px) {
+      :root { --reader-size: 21px; }
+      .top { padding-inline: 12px; }
+      main { padding-inline: 10px; }
+      .card { border-radius: 24px; }
+      .card-head { padding: 18px 16px 0; }
+      .speech { padding: 16px; }
+      .speech p { padding: 15px; border-radius: 20px; }
+      .controls { gap: 8px; }
+      .btn { min-height: 50px; padding-inline: 10px; }
+      .icon-btn { width: 43px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="top">
+      <div class="top-row">
+        <div class="brand">
+          <div class="mark">G</div>
+          <div>
+            <h1 id="appTitle">Roteiros do Gustavo</h1>
+            <div class="sub" id="appSub">Modo leitura instalável</div>
+          </div>
+        </div>
+        <div class="pill" id="statusPill">1 / 1</div>
+      </div>
+      <div class="progress-shell"><div class="progress" id="progress"></div></div>
+      <nav class="tabs" id="tabs" aria-label="Escolher seminário"></nav>
+      <nav class="chips" id="chips" aria-label="Escolher slide"></nav>
+      <div class="install-hint" id="installHint">Para instalar no celular, abra este site pelo Chrome/Edge e use “Adicionar à tela inicial”.</div>
+    </header>
+
+    <div class="tap-zone tap-left" id="tapLeft" aria-hidden="true"></div>
+    <div class="tap-zone tap-right" id="tapRight" aria-hidden="true"></div>
+
+    <main>
+      <article class="card" id="card" aria-live="polite">
+        <div class="card-head">
+          <div class="meta">
+            <span class="tag" id="tag"></span>
+            <span class="time" id="time"></span>
+          </div>
+          <h2 id="title"></h2>
+        </div>
+        <div class="speech" id="speech"></div>
+      </article>
+    </main>
+
+    <section class="sheet" id="sheet" aria-label="Configurações">
+      <p class="sheet-title">Leitura</p>
+      <div class="sheet-grid">
+        <button class="btn" id="fontDown">Fonte menor</button>
+        <button class="btn" id="fontUp">Fonte maior</button>
+        <button class="btn" id="focusMode">Modo foco</button>
+        <button class="btn" id="wakeLock">Tela ligada</button>
+        <button class="btn" id="installBtn">Instalar app</button>
+        <button class="btn" id="showInstallHelp">Ajuda instalação</button>
+      </div>
+    </section>
+
+    <footer class="bottom">
+      <div class="controls">
+        <button class="btn" id="prev">← Voltar</button>
+        <div class="center-tools">
+          <button class="icon-btn" id="settings" aria-label="Abrir ajustes">Aa</button>
+        </div>
+        <button class="btn primary" id="next">Próximo →</button>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const SEMINARS = [{"id": "biologia", "title": "Biologia — Vitaminas B6 e B7", "shortTitle": "Biologia", "accent": "#67e8f9", "gradient": ["#0b1020", "#082f49", "#064e3b"], "slides": [{"title": "Slide 9 — Fontes da B7", "tag": "B7 / Biotina", "time": "30s", "text": ["Agora eu continuo com a vitamina B7, que também é chamada de biotina. Ela aparece em alimentos comuns, como ovos, leite, castanhas, legumes, verduras e cereais integrais.", "Por estar presente em vários alimentos, a falta de B7 é considerada rara. Então o mais importante aqui não é decorar a lista, e sim entender que uma alimentação variada ajuda o corpo a manter essa vitamina.", "Mesmo sendo rara, a falta pode acontecer, e aí alguns sinais aparecem no corpo."]}, {"title": "Slide 10 — Falta e Excesso da B7", "tag": "Deficiência / Exames", "time": "40s", "text": ["Quando falta B7, podem aparecer sinais como queda de cabelo, alterações na pele, unhas fracas, cansaço e mudanças no sistema nervoso.", "Mas a biotina não é só sobre cabelo e unha. A função principal dela é ajudar no metabolismo, ou seja, no uso de carboidratos, gorduras e proteínas pelo corpo.", "Sobre o excesso, o principal alerta são os suplementos em dose alta, porque a biotina pode interferir em exames laboratoriais e causar resultados errados.", "Mas não basta saber quais alimentos têm vitamina. Também precisamos pensar em quem consegue ter acesso a esses alimentos."]}, {"title": "Slide 11 — Nem Toda Falta é Escolha", "tag": "Questão social", "time": "45s", "text": ["Quando a gente fala de falta de vitaminas, não dá para pensar só que a pessoa escolheu se alimentar mal. Muitas vezes, isso depende de renda, tempo, preço dos alimentos e do lugar onde a pessoa vive.", "Por isso, questões como classe, raça, gênero e condição social também entram nessa discussão. Algumas pessoas têm mais dificuldade de manter uma alimentação variada.", "Então, falar de vitaminas também é falar de acesso, segurança alimentar e saúde.", "Por isso, a conclusão não é exagerar em suplemento. É buscar equilíbrio."]}, {"title": "Slide 12 — Equilíbrio é Proteção", "tag": "Conclusão", "time": "30s", "text": ["Para concluir, as vitaminas B6 e B7 mostram como nutrientes pequenos participam de funções importantes do corpo. Elas ajudam no metabolismo, no sistema nervoso e na manutenção da saúde.", "A mensagem final é simples: alimentação variada ajuda muito. E suplemento não deve ser usado por impulso ou por moda; precisa de orientação profissional.", "No fim, equilíbrio é proteção.", "Obrigado."]}]}, {"id": "gilgamesh", "title": "Gilgamesh — Saída de Uruk à Floresta", "shortTitle": "Gilgamesh", "accent": "#fbbf24", "gradient": ["#140b04", "#3b1f0f", "#6b3a12"], "slides": [{"title": "Slide 5 — Saída de Uruk e caminho até a floresta", "tag": "Partida", "time": "1min15s", "text": ["O Davi mostrou a preparação: a decisão, os conselhos, a bênção e o peso dessa jornada.", "Agora, tudo isso deixa de ser promessa.", "A cidade fica para trás.", "Gilgamesh e Enkidu saem de Uruk diante do povo, dos anciãos e dos conselheiros. Não é uma saída comum. É como se a cidade inteira prendesse a respiração, porque todos sabem que eles não estão indo enfrentar apenas um inimigo.", "Eles estão indo até a Floresta de Cedros, um lugar sagrado, protegido por Humbaba.", "Nesse momento, a coragem ganha forma de partida. Os portões deixam de ser proteção e viram limite. Do lado de dentro está Uruk, a segurança, o mundo conhecido. Do lado de fora está o caminho, a poeira, a distância e o risco.", "E é aqui que minha parte começa: quando a história sai da cidade e entra na jornada."]}, {"title": "Slide 6 — Bronze Para o Impossível", "tag": "Armas / Destino", "time": "1min10s", "text": ["Antes de chegarem ao perigo, a missão ganha peso de metal.", "As armas são preparadas como se o medo precisasse virar algo concreto: bronze, fogo, lâmina, machado.", "Mas essas armas não representam só força.", "Elas mostram que Gilgamesh está tentando enfrentar algo maior do que um adversário comum. Ele quer vencer Humbaba, mas também quer vencer o esquecimento. Ele quer deixar um nome que sobreviva ao tempo.", "Por isso essa cena é importante.", "O bronze não é apenas equipamento. É o símbolo da coragem humana tentando encarar uma força sagrada.", "Ao mesmo tempo, existe uma tensão: quanto mais fortes eles parecem, mais percebemos o tamanho do que vem pela frente.", "A jornada deixa de parecer uma aventura de glória.", "Ela começa a parecer destino."]}, {"title": "Slide 7 — O Guia Vai à Frente", "tag": "Enkidu / Aproximação", "time": "1min20s", "text": ["Depois da saída, Uruk vai desaparecendo.", "O caminho fica maior que os heróis.", "Enkidu vai à frente, e isso muda tudo. Gilgamesh é rei, tem poder, fama e coragem. Mas Enkidu conhece o mundo selvagem. Ele entende o caminho, os sinais, a distância entre a cidade e a floresta.", "Nesse ponto, Enkidu não é apenas companheiro.", "Ele é guia.", "O texto fala de distâncias enormes, de cinquenta léguas em um dia e da travessia de sete montanhas. Isso não serve só para mostrar velocidade. Serve para mostrar afastamento.", "A cada passo, eles deixam para trás o mundo humano.", "A cada montanha, a glória fica menos simples.", "E quanto mais perto eles chegam da Floresta de Cedros, mais a jornada muda de tom. Antes era preparação. Depois foi partida. Agora é aproximação do sagrado.", "Minha parte termina exatamente nessa beira.", "Eles ainda não enfrentaram Humbaba, mas já estão longe demais para voltar iguais.", "A partir daqui, a Ana Clara entra: a floresta deixa de ser destino distante e vira presença. O medo ganha corpo. O confronto com Humbaba começa."]}]}];
+    const app = document.querySelector("#app");
+    const tabs = document.querySelector("#tabs");
+    const chips = document.querySelector("#chips");
+    const progress = document.querySelector("#progress");
+    const statusPill = document.querySelector("#statusPill");
+    const tag = document.querySelector("#tag");
+    const time = document.querySelector("#time");
+    const title = document.querySelector("#title");
+    const speech = document.querySelector("#speech");
+    const prev = document.querySelector("#prev");
+    const next = document.querySelector("#next");
+    const sheet = document.querySelector("#sheet");
+    const appTitle = document.querySelector("#appTitle");
+    const appSub = document.querySelector("#appSub");
+    const installHint = document.querySelector("#installHint");
+
+    let seminarIndex = Number(localStorage.getItem("seminar-index") || 0);
+    let current = Number(localStorage.getItem("slide-index") || 0);
+    let readerSize = Number(localStorage.getItem("reader-size") || 22);
+    let wakeLockObject = null;
+    let deferredPrompt = null;
+
+    function seminar() { return SEMINARS[seminarIndex]; }
+    function slides() { return seminar().slides; }
+
+    function applyTheme() {
+      const s = seminar();
+      document.documentElement.style.setProperty("--accent", s.accent);
+      document.documentElement.style.setProperty("--accent2", s.id === "gilgamesh" ? "#fb923c" : "#86efac");
+      document.documentElement.style.setProperty("--bg", s.gradient[0]);
+      document.querySelector(".mark").textContent = s.id === "gilgamesh" ? "U" : "B";
+      appTitle.textContent = s.shortTitle;
+      appSub.textContent = s.title;
+    }
+
+    function setReaderSize() {
+      document.documentElement.style.setProperty("--reader-size", readerSize + "px");
+      localStorage.setItem("reader-size", readerSize);
+    }
+
+    function renderTabs() {
+      tabs.innerHTML = SEMINARS.map((s, i) =>
+        `<button class="tab ${i === seminarIndex ? "active" : ""}" data-index="${i}">${s.shortTitle}</button>`
+      ).join("");
+      tabs.querySelectorAll(".tab").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          seminarIndex = Number(btn.dataset.index);
+          current = 0;
+          localStorage.setItem("seminar-index", seminarIndex);
+          localStorage.setItem("slide-index", current);
+          renderAll();
+        });
+      });
+    }
+
+    function renderChips() {
+      chips.innerHTML = slides().map((slide, i) =>
+        `<button class="chip ${i === current ? "active" : ""}" data-index="${i}">S${slide.title.match(/Slide\s*(\d+)/)?.[1] || i + 1}</button>`
+      ).join("");
+      chips.querySelectorAll(".chip").forEach((btn) => {
+        btn.addEventListener("click", () => show(Number(btn.dataset.index)));
+      });
+    }
+
+    function renderSlide() {
+      current = Math.max(0, Math.min(current, slides().length - 1));
+      const slide = slides()[current];
+      tag.textContent = slide.tag;
+      time.textContent = slide.time;
+      title.textContent = slide.title;
+      speech.innerHTML = slide.text.map((p) => `<p>${p}</p>`).join("");
+      progress.style.width = `${((current + 1) / slides().length) * 100}%`;
+      statusPill.textContent = `${current + 1} / ${slides().length}`;
+      prev.disabled = current === 0;
+      next.disabled = current === slides().length - 1;
+      document.querySelectorAll(".chip").forEach((btn, i) => btn.classList.toggle("active", i === current));
+      document.querySelector("#card").style.animation = "none";
+      requestAnimationFrame(() => { document.querySelector("#card").style.animation = ""; });
+      localStorage.setItem("slide-index", current);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderAll() {
+      applyTheme();
+      renderTabs();
+      renderChips();
+      renderSlide();
+    }
+
+    function show(index) {
+      current = Math.max(0, Math.min(index, slides().length - 1));
+      renderSlide();
+    }
+
+    prev.addEventListener("click", () => show(current - 1));
+    next.addEventListener("click", () => show(current + 1));
+    document.querySelector("#tapLeft").addEventListener("click", () => show(current - 1));
+    document.querySelector("#tapRight").addEventListener("click", () => show(current + 1));
+    document.querySelector("#settings").addEventListener("click", () => sheet.classList.toggle("open"));
+    document.querySelector("#fontDown").addEventListener("click", () => { readerSize = Math.max(18, readerSize - 2); setReaderSize(); });
+    document.querySelector("#fontUp").addEventListener("click", () => { readerSize = Math.min(34, readerSize + 2); setReaderSize(); });
+    document.querySelector("#focusMode").addEventListener("click", () => { app.classList.toggle("focus"); sheet.classList.remove("open"); });
+    document.querySelector("#showInstallHelp").addEventListener("click", () => installHint.classList.toggle("show"));
+
+    document.querySelector("#wakeLock").addEventListener("click", async () => {
+      if (!("wakeLock" in navigator)) {
+        alert("Seu navegador não suporta manter tela ligada.");
+        return;
+      }
+      try {
+        if (wakeLockObject) {
+          await wakeLockObject.release();
+          wakeLockObject = null;
+          document.querySelector("#wakeLock").textContent = "Tela ligada";
+        } else {
+          wakeLockObject = await navigator.wakeLock.request("screen");
+          document.querySelector("#wakeLock").textContent = "Tela ativa ✓";
+        }
+      } catch {
+        alert("Não consegui ativar a tela ligada neste navegador.");
+      }
+    });
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.querySelector("#installBtn").disabled = false;
+    });
+
+    document.querySelector("#installBtn").addEventListener("click", async () => {
+      if (!deferredPrompt) {
+        installHint.classList.add("show");
+        return;
+      }
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      sheet.classList.remove("open");
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === " ") show(current + 1);
+      if (e.key === "ArrowLeft") show(current - 1);
+      if (e.key.toLowerCase() === "f") app.classList.toggle("focus");
+    });
+
+    let touchStartX = 0;
+    document.addEventListener("touchstart", (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    document.addEventListener("touchend", (e) => {
+      const dx = e.changedTouches[0].screenX - touchStartX;
+      if (Math.abs(dx) < 70) return;
+      if (dx < 0) show(current + 1);
+      if (dx > 0) show(current - 1);
+    }, { passive: true });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
+
+    setReaderSize();
+    renderAll();
+  </script>
+</body>
+</html>
